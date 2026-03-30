@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON PARFUM — Luxury Fragrances</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        stone: { 950: '#0C0A09' },
+        gold: { 400: '#FBBF24', 500: '#F59E0B', 600: '#CA8A04', 700: '#A16207' }
+      },
+      fontFamily: {
+        serif: ['Playfair Display', 'Georgia', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { background: #0C0A09; color: #FAFAF9; font-family: 'Inter', sans-serif; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+  .glass-gold { background: rgba(202,138,4,0.08); backdrop-filter: blur(16px); border: 1px solid rgba(202,138,4,0.2); }
+  .gold-gradient { background: linear-gradient(135deg, #CA8A04, #FBBF24, #CA8A04); }
+  .text-gold { color: #CA8A04; }
+  .border-gold { border-color: #CA8A04; }
+  .bg-gold { background: #CA8A04; }
+  .hover-gold:hover { color: #CA8A04; }
+  .btn-gold { background: linear-gradient(135deg, #CA8A04, #D97706); color: #0C0A09; font-weight: 600; transition: all 0.3s; cursor: pointer; }
+  .btn-gold:hover { background: linear-gradient(135deg, #FBBF24, #CA8A04); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(202,138,4,0.3); }
+  .btn-outline { border: 1px solid rgba(202,138,4,0.4); color: #CA8A04; background: transparent; transition: all 0.3s; cursor: pointer; }
+  .btn-outline:hover { background: rgba(202,138,4,0.1); border-color: #CA8A04; }
+  .product-card { transition: all 0.4s cubic-bezier(0.4,0,0.2,1); cursor: pointer; }
+  .product-card:hover { transform: translateY(-6px); }
+  .product-card:hover .card-img { transform: scale(1.05); }
+  .card-img { transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .nav-link { transition: color 0.2s; cursor: pointer; }
+  .nav-link:hover, .nav-link.active { color: #CA8A04; }
+  input, select, textarea { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #FAFAF9; outline: none; transition: border-color 0.2s; }
+  input:focus, select:focus, textarea:focus { border-color: #CA8A04; }
+  input::placeholder, textarea::placeholder { color: rgba(250,250,249,0.3); }
+  select option { background: #1C1917; }
+  .scent-note { position: relative; overflow: hidden; }
+  .step-indicator { transition: all 0.3s; }
+  .step-indicator.done { background: #CA8A04; border-color: #CA8A04; color: #0C0A09; }
+  .step-indicator.active { border-color: #CA8A04; color: #CA8A04; }
+  .review-stars { color: #CA8A04; }
+  .size-btn { cursor: pointer; transition: all 0.2s; }
+  .size-btn.selected { border-color: #CA8A04; color: #CA8A04; background: rgba(202,138,4,0.1); }
+  .filter-checkbox { accent-color: #CA8A04; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation: fadeIn 0.5s ease forwards; }
+  @keyframes shimmer { 0%,100%{opacity:0.6} 50%{opacity:1} }
+  .shimmer { animation: shimmer 3s ease-in-out infinite; }
+  .hero-bg { background: radial-gradient(ellipse at 60% 50%, rgba(202,138,4,0.08) 0%, transparent 70%), radial-gradient(ellipse at 10% 80%, rgba(202,138,4,0.05) 0%, transparent 60%), #0C0A09; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #1C1917; } ::-webkit-scrollbar-thumb { background: #44403C; border-radius: 3px; }
+  .cart-badge { background: #CA8A04; color: #0C0A09; font-size: 10px; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; top: -6px; right: -6px; }
+  @media (max-width: 768px) { .sidebar-mobile { display: none; } .sidebar-mobile.open { display: block; } }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
+    <button onclick="showPage('home')" class="font-serif text-xl font-semibold tracking-widest text-gold uppercase cursor-pointer">Maison Parfum</button>
+    <div class="hidden md:flex items-center gap-8 text-sm tracking-wide text-stone-300">
+      <button onclick="showPage('home')" class="nav-link" id="nav-home">Home</button>
+      <button onclick="showPage('catalog')" class="nav-link" id="nav-catalog">Collection</button>
+      <button onclick="showPage('product')" class="nav-link" id="nav-product">Featured</button>
+    </div>
+    <div class="flex items-center gap-4">
+      <button onclick="showPage('catalog')" class="text-stone-300 hover-gold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/></svg>
+      </button>
+      <button onclick="showPage('checkout')" class="relative text-stone-300 hover-gold transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span class="cart-badge" id="cart-count">3</span>
+      </button>
+      <button class="md:hidden text-stone-300" onclick="toggleMobileMenu()">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 pt-2 border-t border-white/5">
+    <div class="flex flex-col gap-3 text-sm text-stone-300">
+      <button onclick="showPage('home');toggleMobileMenu()" class="nav-link text-left py-1">Home</button>
+      <button onclick="showPage('catalog');toggleMobileMenu()" class="nav-link text-left py-1">Collection</button>
+      <button onclick="showPage('product');toggleMobileMenu()" class="nav-link text-left py-1">Featured</button>
+      <button onclick="showPage('checkout');toggleMobileMenu()" class="nav-link text-left py-1">Checkout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ PAGE: HOME ═══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- Hero -->
+  <section class="hero-bg min-h-screen flex items-center pt-16">
+    <div class="max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-center">
+      <div class="fade-in">
+        <p class="text-gold text-xs tracking-[0.3em] uppercase mb-4 font-medium">New Collection 2024</p>
+        <h1 class="font-serif text-5xl md:text-7xl font-light leading-tight mb-6">
+          The Art of<br><em class="text-gold">Invisible</em><br>Elegance
+        </h1>
+        <p class="text-stone-400 text-lg leading-relaxed mb-8 max-w-md">
+          Rare ingredients. Master perfumers. Scents that become part of your story — whispered, never shouted.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="showPage('catalog')" class="btn-gold px-8 py-3.5 rounded-none text-sm tracking-widest uppercase">Explore Collection</button>
+          <button onclick="showPage('product')" class="btn-outline px-8 py-3.5 rounded-none text-sm tracking-widest uppercase">Signature Scent</button>
+        </div>
+        <div class="flex gap-8 mt-12 pt-8 border-t border-white/10">
+          <div><p class="font-serif text-2xl text-gold font-medium">120+</p><p class="text-stone-500 text-xs tracking-wider uppercase mt-1">Fragrances</p></div>
+          <div><p class="font-serif text-2xl text-gold font-medium">40+</p><p class="text-stone-500 text-xs tracking-wider uppercase mt-1">Countries</p></div>
+          <div><p class="font-serif text-2xl text-gold font-medium">1987</p><p class="text-stone-500 text-xs tracking-wider uppercase mt-1">Founded</p></div>
+        </div>
+      </div>
+      <div class="relative flex justify-center items-center">
+        <div class="absolute inset-0 bg-gradient-radial from-gold-600/10 to-transparent rounded-full blur-3xl"></div>
+        <div class="relative glass rounded-2xl p-8 w-72 md:w-80 shimmer">
+          <div class="aspect-square bg-gradient-to-br from-stone-800 to-stone-900 rounded-xl flex items-center justify-center mb-4 overflow-hidden">
+            <svg viewBox="0 0 200 240" class="w-48 h-56" fill="none">
+              <rect x="70" y="10" width="60" height="20" rx="4" fill="#44403C"/>
+              <rect x="80" y="5" width="40" height="15" rx="3" fill="#57534E"/>
+              <rect x="40" y="30" width="120" height="180" rx="12" fill="#1C1917" stroke="#44403C" stroke-width="1"/>
+              <rect x="50" y="40" width="100" height="160" rx="8" fill="url(#perfumeGrad)"/>
+              <rect x="55" y="85" width="90" height="2" fill="rgba(202,138,4,0.3)"/>
+              <text x="100" y="75" text-anchor="middle" fill="#CA8A04" font-size="9" font-family="serif" letter-spacing="2">MAISON</text>
+              <text x="100" y="88" text-anchor="middle" fill="#CA8A04" font-size="7" font-family="serif" letter-spacing="4">PARFUM</text>
+              <text x="100" y="110" text-anchor="middle" fill="#FAFAF9" font-size="14" font-family="serif" font-style="italic">Nuit d'Or</text>
+              <text x="100" y="125" text-anchor="middle" fill="#78716C" font-size="6" letter-spacing="3">EAU DE PARFUM</text>
+              <ellipse cx="100" cy="195" rx="35" ry="8" fill="rgba(202,138,4,0.15)"/>
+              <defs>
+                <linearGradient id="perfumeGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#292524"/>
+                  <stop offset="100%" stop-color="#1C1917"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <p class="font-serif text-lg font-medium mb-1">Nuit d'Or</p>
+          <p class="text-stone-400 text-sm mb-3">Oud · Amber · Sandalwood</p>
+          <div class="flex items-center justify-between">
+            <span class="text-gold font-semibold">$185.00</span>
+            <button onclick="showPage('product')" class="btn-gold px-4 py-2 text-xs tracking-widest uppercase">View</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bestsellers -->
+  <section class="py-24 max-w-7xl mx-auto px-6">
+    <div class="flex items-end justify-between mb-12">
+      <div>
+        <p class="text-gold text-xs tracking-[0.3em] uppercase mb-2">Curated Selection</p>
+        <h2 class="font-serif text-4xl font-light">Bestsellers</h2>
+      </div>
+      <button onclick="showPage('catalog')" class="btn-outline px-6 py-2.5 text-xs tracking-widest uppercase hidden md:block">View All</button>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+      <!-- Product cards -->
+      <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+        <div class="aspect-[3/4] overflow-hidden bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
+          <svg viewBox="0 0 120 160" class="w-28 h-36 card-img" fill="none">
+            <rect x="40" y="5" width="40" height="12" rx="3" fill="#44403C"/>
+            <rect x="20" y="17" width="80" height="130" rx="10" fill="#1C1917" stroke="#CA8A04" stroke-width="0.5" stroke-opacity="0.4"/>
+            <rect x="26" y="23" width="68" height="118" rx="7" fill="url(#g1)"/>
+            <text x="60" y="65" text-anchor="middle" fill="#CA8A04" font-size="6" letter-spacing="2" font-family="serif">MAISON</text>
+            <text x="60" y="78" text-anchor="middle" fill="#FAFAF9" font-size="9" font-family="serif" font-style="italic">Rose Noir</text>
+            <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#292524"/><stop offset="100%" stop-color="#1C1917"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="p-4">
+          <p class="font-serif font-medium mb-0.5">Rose Noir</p>
+          <p class="text-stone-500 text-xs mb-2">Rose · Musk · Patchouli</p>
+          <div class="flex items-center justify-between">
+            <span class="text-gold text-sm font-semibold">$145.00</span>
+            <div class="flex text-gold text-xs">★★★★★</div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+        <div class="aspect-[3/4] overflow-hidden bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
+          <svg viewBox="0 0 120 160" class="w-28 h-36 card-img" fill="none">
+            <rect x="42" y="5" width="36" height="12" rx="3" fill="#44403C"/>
+            <rect x="25" y="17" width="70" height="130" rx="10" fill="#1C1917" stroke="#78716C" stroke-width="0.5"/>
+            <rect x="31" y="23" width="58" height="118" rx="7" fill="url(#g2)"/>
+            <text x="60" y="65" text-anchor="middle" fill="#CA8A04" font-size="6" letter-spacing="2" font-family="serif">MAISON</text>
+            <text x="60" y="78" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Bois Sacré</text>
+            <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1C1917"/><stop offset="100%" stop-color="#0C0A09"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="p-4">
+          <p class="font-serif font-medium mb-0.5">Bois Sacré</p>
+          <p class="text-stone-500 text-xs mb-2">Cedar · Vetiver · Benzoin</p>
+          <div class="flex items-center justify-between">
+            <span class="text-gold text-sm font-semibold">$165.00</span>
+            <div class="flex text-gold text-xs">★★★★★</div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+        <div class="aspect-[3/4] overflow-hidden bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
+          <svg viewBox="0 0 120 160" class="w-28 h-36 card-img" fill="none">
+            <rect x="38" y="5" width="44" height="12" rx="3" fill="#44403C"/>
+            <rect x="15" y="17" width="90" height="130" rx="10" fill="#1C1917" stroke="#CA8A04" stroke-width="0.5" stroke-opacity="0.3"/>
+            <rect x="21" y="23" width="78" height="118" rx="7" fill="url(#g3)"/>
+            <text x="60" y="65" text-anchor="middle" fill="#CA8A04" font-size="6" letter-spacing="2" font-family="serif">MAISON</text>
+            <text x="60" y="78" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Iris Blanc</text>
+            <defs><linearGradient id="g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2C2928"/><stop offset="100%" stop-color="#171412"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="p-4">
+          <p class="font-serif font-medium mb-0.5">Iris Blanc</p>
+          <p class="text-stone-500 text-xs mb-2">Iris · Jasmine · Vanilla</p>
+          <div class="flex items-center justify-between">
+            <span class="text-gold text-sm font-semibold">$195.00</span>
+            <div class="flex text-gold text-xs">★★★★☆</div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+        <div class="aspect-[3/4] overflow-hidden bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center">
+          <svg viewBox="0 0 120 160" class="w-28 h-36 card-img" fill="none">
+            <rect x="44" y="5" width="32" height="12" rx="3" fill="#57534E"/>
+            <rect x="30" y="17" width="60" height="130" rx="10" fill="#1C1917" stroke="#78716C" stroke-width="0.5"/>
+            <rect x="36" y="23" width="48" height="118" rx="7" fill="url(#g4)"/>
+            <text x="60" y="65" text-anchor="middle" fill="#CA8A04" font-size="6" letter-spacing="2" font-family="serif">MAISON</text>
+            <text x="60" y="78" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Ambre Doux</text>
+            <defs><linearGradient id="g4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#221F1E"/><stop offset="100%" stop-color="#0C0A09"/></linearGradient></defs>
+          </svg>
+        </div>
+        <div class="p-4">
+          <p class="font-serif font-medium mb-0.5">Ambre Doux</p>
+          <p class="text-stone-500 text-xs mb-2">Amber · Tonka · Heliotrope</p>
+          <div class="flex items-center justify-between">
+            <span class="text-gold text-sm font-semibold">$155.00</span>
+            <div class="flex text-gold text-xs">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-8 md:hidden">
+      <button onclick="showPage('catalog')" class="btn-outline px-8 py-3 text-xs tracking-widest uppercase">View All Collection</button>
+    </div>
+  </section>
+
+  <!-- Brand Story -->
+  <section class="py-24 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="glass rounded-xl p-6 flex flex-col gap-2">
+          <div class="w-10 h-10 glass-gold rounded-lg flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3c-1 0-2 .5-2 1.5S11 6 11 7H6l1 13h10L18 7h-5c0-1 1-1.5 1-2.5S13 3 12 3z"/></svg>
+          </div>
+          <p class="font-serif font-medium">Rare Ingredients</p>
+          <p class="text-stone-500 text-xs leading-relaxed">Sourced from 40+ countries, each raw material selected by our master nose.</p>
+        </div>
+        <div class="glass-gold rounded-xl p-6 flex flex-col gap-2 row-span-2">
+          <div class="w-10 h-10 bg-gold/20 rounded-lg flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          </div>
+          <p class="font-serif font-medium text-gold">Master Crafted</p>
+          <p class="text-stone-400 text-xs leading-relaxed">Each fragrance is the result of years of development, tested and refined in our Grasse laboratory.</p>
+          <div class="mt-auto pt-4 border-t border-gold/20">
+            <p class="text-gold text-2xl font-serif font-medium">37</p>
+            <p class="text-stone-400 text-xs tracking-wider uppercase">Years of Excellence</p>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-6 flex flex-col gap-2">
+          <div class="w-10 h-10 glass-gold rounded-lg flex items-center justify-center mb-2">
+            <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 0 1 2 2v1a2 2 0 0 0 2 2 2 2 0 0 1 2 2v2.945M8 3.935V5.5A2.5 2.5 0 0 0 10.5 8h.5a2 2 0 0 1 2 2 2 2 0 0 0 4 0 2 2 0 0 1 2-2h1.064M15 20.488V18a2 2 0 0 1 2-2h3.064M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          </div>
+          <p class="font-serif font-medium">Sustainable</p>
+          <p class="text-stone-500 text-xs leading-relaxed">Carbon-neutral production. Refillable bottles. Ethical sourcing from farm to flacon.</p>
+        </div>
+      </div>
+      <div>
+        <p class="text-gold text-xs tracking-[0.3em] uppercase mb-4">Our Story</p>
+        <h2 class="font-serif text-4xl font-light leading-tight mb-6">Perfumery as a<br><em>Living Art</em></h2>
+        <p class="text-stone-400 leading-relaxed mb-4">Since 1987, Maison Parfum has been dedicated to the belief that scent is the most intimate form of self-expression. Founded in Grasse — the perfume capital of the world — we blend ancient tradition with contemporary vision.</p>
+        <p class="text-stone-400 leading-relaxed mb-8">Every bottle is a collaboration between rare nature and human genius. Our perfumers spend years mastering the 3,000+ raw materials that form the perfumer's palette.</p>
+        <button onclick="showPage('catalog')" class="btn-gold px-8 py-3.5 text-xs tracking-widest uppercase">Discover the Collection</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="py-24 border-t border-white/5">
+    <div class="max-w-xl mx-auto px-6 text-center">
+      <p class="text-gold text-xs tracking-[0.3em] uppercase mb-4">Exclusive Access</p>
+      <h2 class="font-serif text-4xl font-light mb-4">First to Know</h2>
+      <p class="text-stone-400 mb-8">New launches, limited editions, and invitations to private events — for those who appreciate the extraordinary.</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input type="email" placeholder="Your email address" class="flex-1 px-5 py-3.5 text-sm rounded-none">
+        <button class="btn-gold px-8 py-3.5 text-xs tracking-widest uppercase whitespace-nowrap">Subscribe</button>
+      </div>
+      <p class="text-stone-600 text-xs mt-4">No spam. Unsubscribe at any time.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <div class="col-span-2 md:col-span-1">
+          <p class="font-serif text-lg text-gold tracking-widest uppercase mb-3">Maison Parfum</p>
+          <p class="text-stone-500 text-xs leading-relaxed">The art of invisible elegance. Grasse, France · Est. 1987</p>
+        </div>
+        <div>
+          <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-4">Collection</p>
+          <ul class="space-y-2 text-stone-500 text-sm">
+            <li><button onclick="showPage('catalog')" class="hover-gold transition-colors">All Fragrances</button></li>
+            <li><button onclick="showPage('catalog')" class="hover-gold transition-colors">Women</button></li>
+            <li><button onclick="showPage('catalog')" class="hover-gold transition-colors">Men</button></li>
+            <li><button onclick="showPage('catalog')" class="hover-gold transition-colors">Unisex</button></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-4">Services</p>
+          <ul class="space-y-2 text-stone-500 text-sm">
+            <li><span class="hover-gold transition-colors cursor-pointer">Fragrance Consultation</span></li>
+            <li><span class="hover-gold transition-colors cursor-pointer">Gift Wrapping</span></li>
+            <li><span class="hover-gold transition-colors cursor-pointer">Engraving</span></li>
+            <li><span class="hover-gold transition-colors cursor-pointer">Returns</span></li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-4">Contact</p>
+          <ul class="space-y-2 text-stone-500 text-sm">
+            <li>info@maisonparfum.com</li>
+            <li>+33 4 93 36 01 10</li>
+            <li class="pt-2 flex gap-3">
+              <span class="cursor-pointer hover-gold transition-colors">IG</span>
+              <span class="cursor-pointer hover-gold transition-colors">FB</span>
+              <span class="cursor-pointer hover-gold transition-colors">PIN</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-white/5 pt-6 flex flex-col md:flex-row justify-between text-stone-600 text-xs">
+        <p>© 2024 Maison Parfum. All rights reserved.</p>
+        <div class="flex gap-6 mt-2 md:mt-0">
+          <span class="cursor-pointer hover-gold transition-colors">Privacy</span>
+          <span class="cursor-pointer hover-gold transition-colors">Terms</span>
+          <span class="cursor-pointer hover-gold transition-colors">Cookies</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: CATALOG ═══════════════════════════════════════════ -->
+<div id="page-catalog" class="page pt-16">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Header -->
+    <div class="mb-10">
+      <p class="text-gold text-xs tracking-[0.3em] uppercase mb-2">120 Fragrances</p>
+      <h1 class="font-serif text-4xl font-light">The Collection</h1>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Sidebar Filters -->
+      <aside class="w-full md:w-56 flex-shrink-0 sidebar-mobile md:block" id="sidebar">
+        <div class="glass rounded-xl p-5 sticky top-20 space-y-6">
+          <div>
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-3">Gender</p>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox" checked> All
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> Women
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> Men
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> Unisex
+              </label>
+            </div>
+          </div>
+          <div class="border-t border-white/5 pt-4">
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-3">Price Range</p>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> Under $100
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox" checked> $100 – $200
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> $200 – $350
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors">
+                <input type="checkbox" class="filter-checkbox"> $350+
+              </label>
+            </div>
+          </div>
+          <div class="border-t border-white/5 pt-4">
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-3">Scent Family</p>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Floral</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Oriental</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox" checked> Woody</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Fresh</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Chypre</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Gourmand</label>
+            </div>
+          </div>
+          <div class="border-t border-white/5 pt-4">
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-3">Concentration</p>
+            <div class="space-y-2 text-sm">
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Parfum</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox" checked> Eau de Parfum</label>
+              <label class="flex items-center gap-2 cursor-pointer text-stone-300 hover:text-gold transition-colors"><input type="checkbox" class="filter-checkbox"> Eau de Toilette</label>
+            </div>
+          </div>
+          <button class="w-full btn-gold py-2.5 text-xs tracking-widest uppercase rounded-none">Apply Filters</button>
+        </div>
+      </aside>
+
+      <!-- Main Grid -->
+      <div class="flex-1">
+        <!-- Sort bar -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+          <p class="text-stone-500 text-sm">Showing <span class="text-stone-300">24</span> of 120 fragrances</p>
+          <div class="flex items-center gap-3">
+            <button class="md:hidden btn-outline px-4 py-2 text-xs tracking-widest" onclick="document.getElementById('sidebar').classList.toggle('open')">Filters</button>
+            <select class="px-4 py-2 text-sm rounded-none text-stone-300">
+              <option>Sort: Featured</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+              <option>Newest</option>
+              <option>Best Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <!-- 9 product cards -->
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden relative">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="32" y="4" width="36" height="11" rx="3" fill="#44403C"/>
+                <rect x="15" y="15" width="70" height="116" rx="9" fill="#1C1917" stroke="#CA8A04" stroke-width="0.4" stroke-opacity="0.5"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Nuit d'Or</text>
+              </svg>
+              <span class="absolute top-3 left-3 glass text-gold text-xs px-2 py-0.5 tracking-wider">NEW</span>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Nuit d'Or</p><p class="text-stone-500 text-xs mb-3">Oud · Amber · Sandalwood</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$185</span><div class="flex text-gold text-xs">★★★★★</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="36" y="4" width="28" height="11" rx="3" fill="#44403C"/>
+                <rect x="22" y="15" width="56" height="116" rx="9" fill="#1C1917" stroke="#78716C" stroke-width="0.4"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Rose Noir</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Rose Noir</p><p class="text-stone-500 text-xs mb-3">Rose · Musk · Patchouli</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$145</span><div class="flex text-gold text-xs">★★★★★</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden relative">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="34" y="4" width="32" height="11" rx="3" fill="#44403C"/>
+                <rect x="18" y="15" width="64" height="116" rx="9" fill="#1C1917" stroke="#CA8A04" stroke-width="0.4" stroke-opacity="0.3"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Bois Sacré</text>
+              </svg>
+              <span class="absolute top-3 right-3 glass text-stone-400 text-xs px-2 py-0.5">BESTSELLER</span>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Bois Sacré</p><p class="text-stone-500 text-xs mb-3">Cedar · Vetiver · Benzoin</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$165</span><div class="flex text-gold text-xs">★★★★★</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="36" y="4" width="28" height="11" rx="3" fill="#57534E"/>
+                <rect x="25" y="15" width="50" height="116" rx="9" fill="#1C1917" stroke="#78716C" stroke-width="0.4"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Iris Blanc</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Iris Blanc</p><p class="text-stone-500 text-xs mb-3">Iris · Jasmine · Vanilla</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$195</span><div class="flex text-gold text-xs">★★★★☆</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="33" y="4" width="34" height="11" rx="3" fill="#44403C"/>
+                <rect x="16" y="15" width="68" height="116" rx="9" fill="#1C1917" stroke="#CA8A04" stroke-width="0.4" stroke-opacity="0.4"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Ambre Doux</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Ambre Doux</p><p class="text-stone-500 text-xs mb-3">Amber · Tonka · Heliotrope</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$155</span><div class="flex text-gold text-xs">★★★★★</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden relative">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="35" y="4" width="30" height="11" rx="3" fill="#44403C"/>
+                <rect x="20" y="15" width="60" height="116" rx="9" fill="#1C1917" stroke="#78716C" stroke-width="0.4"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Vert Sauvage</text>
+              </svg>
+              <span class="absolute top-3 left-3 bg-stone-700 text-stone-300 text-xs px-2 py-0.5 tracking-wider">LIMITED</span>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Vert Sauvage</p><p class="text-stone-500 text-xs mb-3">Bergamot · Basil · Cypress</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$135</span><div class="flex text-gold text-xs">★★★★☆</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="37" y="4" width="26" height="11" rx="3" fill="#57534E"/>
+                <rect x="28" y="15" width="44" height="116" rx="9" fill="#1C1917" stroke="#CA8A04" stroke-width="0.4" stroke-opacity="0.3"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Sel Marin</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Sel Marin</p><p class="text-stone-500 text-xs mb-3">Sea Salt · Driftwood · Aquatic</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$125</span><div class="flex text-gold text-xs">★★★★☆</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="33" y="4" width="34" height="11" rx="3" fill="#44403C"/>
+                <rect x="14" y="15" width="72" height="116" rx="9" fill="#1C1917" stroke="#CA8A04" stroke-width="0.4" stroke-opacity="0.5"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="8" font-family="serif" font-style="italic">Tabac Noir</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Tabac Noir</p><p class="text-stone-500 text-xs mb-3">Tobacco · Leather · Vanilla</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$220</span><div class="flex text-gold text-xs">★★★★★</div></div></div>
+          </div>
+
+          <div class="product-card glass rounded-xl overflow-hidden" onclick="showPage('product')">
+            <div class="aspect-[3/4] bg-gradient-to-br from-stone-800 to-stone-900 flex items-center justify-center overflow-hidden">
+              <svg viewBox="0 0 100 140" class="w-24 h-32 card-img" fill="none">
+                <rect x="35" y="4" width="30" height="11" rx="3" fill="#44403C"/>
+                <rect x="20" y="15" width="60" height="116" rx="9" fill="#1C1917" stroke="#78716C" stroke-width="0.4"/>
+                <text x="50" y="60" text-anchor="middle" fill="#CA8A04" font-size="5" letter-spacing="1.5" font-family="serif">MAISON</text>
+                <text x="50" y="72" text-anchor="middle" fill="#FAFAF9" font-size="7" font-family="serif" font-style="italic">Jasmin Pur</text>
+              </svg>
+            </div>
+            <div class="p-4"><p class="font-serif font-medium mb-0.5">Jasmin Pur</p><p class="text-stone-500 text-xs mb-3">Jasmine · Tuberose · Musk</p><div class="flex items-center justify-between"><span class="text-gold font-semibold">$175</span><div class="flex text-gold text-xs">★★★★☆</div></div></div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-center gap-2 mt-10">
+          <button class="w-9 h-9 glass flex items-center justify-center text-sm text-gold border-gold rounded cursor-pointer">1</button>
+          <button class="w-9 h-9 glass flex items-center justify-center text-sm text-stone-400 hover:text-gold transition-colors cursor-pointer rounded">2</button>
+          <button class="w-9 h-9 glass flex items-center justify-center text-sm text-stone-400 hover:text-gold transition-colors cursor-pointer rounded">3</button>
+          <span class="text-stone-600 px-1">…</span>
+          <button class="w-9 h-9 glass flex items-center justify-center text-sm text-stone-400 hover:text-gold transition-colors cursor-pointer rounded">10</button>
+          <button class="w-9 h-9 glass flex items-center justify-center text-stone-400 hover:text-gold transition-colors cursor-pointer rounded">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: PRODUCT ═══════════════════════════════════════════ -->
+<div id="page-product" class="page pt-16">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-stone-500 mb-8">
+      <button onclick="showPage('home')" class="hover-gold transition-colors cursor-pointer">Home</button>
+      <span>/</span>
+      <button onclick="showPage('catalog')" class="hover-gold transition-colors cursor-pointer">Collection</button>
+      <span>/</span>
+      <span class="text-stone-300">Nuit d'Or</span>
+    </nav>
+
+    <div class="grid md:grid-cols-2 gap-12 lg:gap-20 mb-20">
+      <!-- Left: Images -->
+      <div class="space-y-4">
+        <div class="glass rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 60%, rgba(202,138,4,0.06) 0%, transparent 70%)"></div>
+          <svg viewBox="0 0 200 280" class="w-48 h-64" fill="none">
+            <rect x="70" y="10" width="60" height="22" rx="5" fill="#44403C"/>
+            <rect x="80" y="4" width="40" height="16" rx="4" fill="#57534E"/>
+            <rect x="35" y="32" width="130" height="220" rx="14" fill="#1C1917" stroke="#CA8A04" stroke-width="0.6" stroke-opacity="0.4"/>
+            <rect x="44" y="41" width="112" height="202" rx="10" fill="url(#prodGrad)"/>
+            <line x1="44" y1="100" x2="156" y2="100" stroke="rgba(202,138,4,0.2)" stroke-width="1"/>
+            <text x="100" y="82" text-anchor="middle" fill="#CA8A04" font-size="7" letter-spacing="3" font-family="serif">MAISON PARFUM</text>
+            <text x="100" y="128" text-anchor="middle" fill="#FAFAF9" font-size="18" font-family="serif" font-style="italic" font-weight="400">Nuit d'Or</text>
+            <text x="100" y="146" text-anchor="middle" fill="#78716C" font-size="6.5" letter-spacing="3">EAU DE PARFUM</text>
+            <text x="100" y="160" text-anchor="middle" fill="#57534E" font-size="6" letter-spacing="2">100 ml</text>
+            <ellipse cx="100" cy="246" rx="45" ry="10" fill="rgba(202,138,4,0.12)"/>
+            <defs>
+              <linearGradient id="prodGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#292524"/>
+                <stop offset="50%" stop-color="#1C1917"/>
+                <stop offset="100%" stop-color="#0C0A09"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <div class="glass rounded-lg aspect-square flex items-center justify-center cursor-pointer border border-gold/30">
+            <div class="w-6 h-10 bg-stone-700 rounded-sm"></div>
+          </div>
+          <div class="glass rounded-lg aspect-square flex items-center justify-center cursor-pointer hover:border hover:border-gold/30 transition-all">
+            <div class="w-8 h-8 bg-stone-800 rounded-full"></div>
+          </div>
+          <div class="glass rounded-lg aspect-square flex items-center justify-center cursor-pointer hover:border hover:border-gold/30 transition-all">
+            <div class="w-10 h-6 bg-stone-700 rounded-sm"></div>
+          </div>
+          <div class="glass rounded-lg aspect-square flex items-center justify-center cursor-pointer hover:border hover:border-gold/30 transition-all">
+            <div class="w-5 h-8 bg-stone-800 rounded-sm"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Info -->
+      <div>
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <p class="text-gold text-xs tracking-[0.25em] uppercase mb-2">Woody Oriental</p>
+            <h1 class="font-serif text-4xl font-light">Nuit d'Or</h1>
+            <p class="text-stone-400 mt-1">Eau de Parfum</p>
+          </div>
+          <button class="glass p-2.5 rounded-lg cursor-pointer hover:border-gold/30 transition-all">
+            <svg class="w-5 h-5 text-stone-400 hover:text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 0 0 0 6.364L12 20.364l7.682-7.682a4.5 4.5 0 0 0-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 0 0-6.364 0z"/></svg>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3 mb-6">
+          <div class="review-stars text-sm">★★★★★</div>
+          <span class="text-stone-400 text-sm">4.9 (128 reviews)</span>
+        </div>
+
+        <div class="flex items-baseline gap-3 mb-8">
+          <span class="font-serif text-3xl font-light">$185.00</span>
+          <span class="text-stone-500 text-sm line-through">$210.00</span>
+          <span class="glass-gold text-gold text-xs px-2 py-0.5 rounded">12% OFF</span>
+        </div>
+
+        <!-- Size -->
+        <div class="mb-6">
+          <p class="text-xs tracking-[0.2em] uppercase text-stone-400 mb-3">Size</p>
+          <div class="flex gap-3">
+            <button class="size-btn glass px-5 py-2.5 text-sm rounded-none" onclick="selectSize(this)">30 ml</button>
+            <button class="size-btn glass px-5 py-2.5 text-sm rounded-none selected" onclick="selectSize(this)">50 ml</button>
+            <button class="size-btn glass px-5 py-2.5 text-sm rounded-none" onclick="selectSize(this)">100 ml</button>
+          </div>
+        </div>
+
+        <!-- Qty + Add to cart -->
+        <div class="flex gap-3 mb-6">
+          <div class="glass flex items-center">
+            <button onclick="changeQty(-1)" class="px-4 py-3 hover:text-gold transition-colors cursor-pointer text-lg">−</button>
+            <span id="qty" class="px-4 py-3 text-sm w-10 text-center">1</span>
+            <button onclick="changeQty(1)" class="px-4 py-3 hover:text-gold transition-colors cursor-pointer text-lg">+</button>
+          </div>
+          <button onclick="addToCart()" class="flex-1 btn-gold py-3 text-sm tracking-widest uppercase">Add to Cart</button>
+        </div>
+        <button onclick="showPage('checkout')" class="w-full btn-outline py-3 text-sm tracking-widest uppercase mb-6">Buy Now</button>
+
+        <!-- Features -->
+        <div class="grid grid-cols-3 gap-3 mb-8 text-center">
+          <div class="glass rounded-lg p-3">
+            <svg class="w-5 h-5 mx-auto text-gold mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <p class="text-xs text-stone-400">Free Shipping<br><span class="text-stone-600">over $100</span></p>
+          </div>
+          <div class="glass rounded-lg p-3">
+            <svg class="w-5 h-5 mx-auto text-gold mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 0 1-15.357-2m15.357 2H15"/></svg>
+            <p class="text-xs text-stone-400">Easy Returns<br><span class="text-stone-600">30 days</span></p>
+          </div>
+          <div class="glass rounded-lg p-3">
+            <svg class="w-5 h-5 mx-auto text-gold mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <p class="text-xs text-stone-400">Authentic<br><span class="text-stone-600">Guaranteed</span></p>
+          </div>
+        </div>
+
+        <!-- Notes short -->
+        <div class="glass-gold rounded-xl p-4">
+          <p class="text-xs tracking-[0.2em] uppercase text-gold mb-3">Fragrance Character</p>
+          <p class="text-stone-300 text-sm leading-relaxed">Opening with a burst of bergamot and black pepper, deepening into a heart of rose and oud, settling on a warm base of amber and sandalwood. A scent of timeless sophistication.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scent Pyramid -->
+    <div class="mb-20">
+      <div class="text-center mb-10">
+        <p class="text-gold text-xs tracking-[0.3em] uppercase mb-2">Composition</p>
+        <h2 class="font-serif text-3xl font-light">Fragrance Notes</h2>
+      </div>
+      <div class="max-w-2xl mx-auto space-y-4">
+        <div class="glass-gold rounded-xl p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-1 h-6 bg-gold rounded-full"></div>
+            <p class="text-xs tracking-[0.2em] uppercase text-gold">Top Notes — First 15 minutes</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Bergamot</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Black Pepper</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Pink Grapefruit</span>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-5 ml-4">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-1 h-6 bg-stone-400 rounded-full"></div>
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-400">Heart Notes — 30 min to 2 hrs</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Turkish Rose</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Oud</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Geranium</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Cardamom</span>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-5 ml-8">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-1 h-6 bg-stone-600 rounded-full"></div>
+            <p class="text-xs tracking-[0.2em] uppercase text-stone-500">Base Notes — Hours later</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Amber</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Sandalwood</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Musk</span>
+            <span class="glass px-3 py-1.5 text-sm text-stone-300 rounded-full">Vanilla</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    <div class="border-t border-white/5 pt-16">
+      <div class="flex items-end justify-between mb-10">
+        <div>
+          <p class="text-gold text-xs tracking-[0.3em] uppercase mb-2">128 Reviews</p>
+          <h2 class="font-serif text-3xl font-light">What Our Clients Say</h2>
+        </div>
+        <div class="text-right hidden md:block">
+          <div class="review-stars text-2xl">★★★★★</div>
+          <p class="text-stone-400 text-sm">4.9 average</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="glass rounded-xl p-6">
+          <div class="review-stars text-sm mb-3">★★★★★</div>
+          <p class="text-stone-300 text-sm leading-relaxed mb-4">"Absolutely intoxicating. I've tried many oud-based fragrances but Nuit d'Or is in a class of its own. The balance between dark and light is masterful."</p>
+          <div class="flex items-center gap-3 border-t border-white/5 pt-4">
+            <div class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center text-xs font-medium text-gold">SA</div>
+            <div><p class="text-sm font-medium">Sophia A.</p><p class="text-stone-500 text-xs">Paris, France</p></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-6">
+          <div class="review-stars text-sm mb-3">★★★★★</div>
+          <p class="text-stone-300 text-sm leading-relaxed mb-4">"Received so many compliments. It lasts all day — I applied in the morning and could still smell it at midnight. Worth every penny of the price."</p>
+          <div class="flex items-center gap-3 border-t border-white/5 pt-4">
+            <div class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center text-xs font-medium text-gold">JM</div>
+            <div><p class="text-sm font-medium">James M.</p><p class="text-stone-500 text-xs">London, UK</p></div>
+          </div>
+        </div>
+        <div class="glass rounded-xl p-6">
+          <div class="review-stars text-sm mb-3">★★★★☆</div>
+          <p class="text-stone-300 text-sm leading-relaxed mb-4">"The packaging is just as exquisite as the scent itself. Makes for a wonderful gift. The dry-down into the amber base is absolutely sublime."</p>
+          <div class="flex items-center gap-3 border-t border-white/5 pt-4">
+            <div class="w-8 h-8 rounded-full bg-stone-700 flex items-center justify-center text-xs font-medium text-gold">RL</div>
+            <div><p class="text-sm font-medium">Rachel L.</p><p class="text-stone-500 text-xs">New York, USA</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PAGE: CHECKOUT ═══════════════════════════════════════════ -->
+<div id="page-checkout" class="page pt-16">
+  <div class="max-w-6xl mx-auto px-6 py-12">
+    <div class="mb-10">
+      <p class="text-gold text-xs tracking-[0.3em] uppercase mb-2">Secure Checkout</p>
+      <h1 class="font-serif text-3xl font-light">Complete Your Order</h1>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="flex items-center gap-0 mb-10">
+      <div class="flex items-center gap-2" id="step-1-indicator">
+        <div class="step-indicator w-8 h-8 rounded-full border flex items-center justify-center text-sm font-medium active" id="step1-dot">1</div>
+        <span class="text-sm text-stone-300 hidden sm:block">Shipping</span>
+      </div>
+      <div class="flex-1 h-px bg-white/10 mx-3"></div>
+      <div class="flex items-center gap-2" id="step-2-indicator">
+        <div class="step-indicator w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-sm font-medium text-stone-500" id="step2-dot">2</div>
+        <span class="text-sm text-stone-500 hidden sm:block">Payment</span>
+      </div>
+      <div class="flex-1 h-px bg-white/10 mx-3"></div>
+      <div class="flex items-center gap-2">
+        <div class="step-indicator w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-sm font-medium text-stone-500" id="step3-dot">3</div>
+        <span class="text-sm text-stone-500 hidden sm:block">Confirm</span>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
+      <!-- Left: Form -->
+      <div>
+        <!-- Step 1: Shipping -->
+        <div id="checkout-step-1">
+          <div class="glass rounded-xl p-6 mb-5">
+            <h2 class="font-serif text-xl font-light mb-5">Shipping Information</h2>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">First Name</label>
+                <input type="text" placeholder="Jean" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Last Name</label>
+                <input type="text" placeholder="Dupont" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Email Address</label>
+                <input type="email" placeholder="jean.dupont@email.com" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Street Address</label>
+                <input type="text" placeholder="12 Rue de la Paix" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">City</label>
+                <input type="text" placeholder="Paris" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Postal Code</label>
+                <input type="text" placeholder="75001" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Country</label>
+                <select class="w-full px-4 py-3 text-sm">
+                  <option>France</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Germany</option>
+                  <option>Italy</option>
+                  <option>Spain</option>
+                </select>
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Phone (optional)</label>
+                <input type="tel" placeholder="+33 1 00 00 00 00" class="w-full px-4 py-3 text-sm">
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-xl p-6 mb-6">
+            <h2 class="font-serif text-xl font-light mb-4">Shipping Method</h2>
+            <div class="space-y-3">
+              <label class="flex items-center justify-between p-4 glass-gold rounded-lg cursor-pointer border border-gold/30">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="shipping" checked class="accent-yellow-600">
+                  <div>
+                    <p class="text-sm font-medium">Standard Delivery</p>
+                    <p class="text-stone-400 text-xs">3–5 business days</p>
+                  </div>
+                </div>
+                <span class="text-gold font-medium">FREE</span>
+              </label>
+              <label class="flex items-center justify-between p-4 glass rounded-lg cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="shipping" class="accent-yellow-600">
+                  <div>
+                    <p class="text-sm font-medium">Express Delivery</p>
+                    <p class="text-stone-400 text-xs">1–2 business days</p>
+                  </div>
+                </div>
+                <span class="text-stone-300 font-medium">$15.00</span>
+              </label>
+              <label class="flex items-center justify-between p-4 glass rounded-lg cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <input type="radio" name="shipping" class="accent-yellow-600">
+                  <div>
+                    <p class="text-sm font-medium">Same Day (Paris only)</p>
+                    <p class="text-stone-400 text-xs">Order before 2pm</p>
+                  </div>
+                </div>
+                <span class="text-stone-300 font-medium">$25.00</span>
+              </label>
+            </div>
+          </div>
+
+          <button onclick="goToStep(2)" class="btn-gold w-full py-4 text-sm tracking-widest uppercase">Continue to Payment</button>
+        </div>
+
+        <!-- Step 2: Payment -->
+        <div id="checkout-step-2" class="hidden">
+          <div class="glass rounded-xl p-6 mb-5">
+            <h2 class="font-serif text-xl font-light mb-5">Payment Information</h2>
+            <div class="flex gap-3 mb-5">
+              <div class="glass px-3 py-2 rounded text-xs text-stone-400 flex items-center gap-1.5">
+                <svg class="w-5 h-3" viewBox="0 0 50 30" fill="none"><rect width="50" height="30" rx="4" fill="#1434CB"/><circle cx="19" cy="15" r="8" fill="#EB001B" opacity="0.9"/><circle cx="31" cy="15" r="8" fill="#F79E1B" opacity="0.9"/><ellipse cx="25" cy="15" rx="3" ry="8" fill="#FF5F00" opacity="0.7"/></svg>
+                Visa
+              </div>
+              <div class="glass px-3 py-2 rounded text-xs text-stone-400">Mastercard</div>
+              <div class="glass px-3 py-2 rounded text-xs text-stone-400">Amex</div>
+              <div class="glass px-3 py-2 rounded text-xs text-stone-400">PayPal</div>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Cardholder Name</label>
+                <input type="text" placeholder="Jean Dupont" class="w-full px-4 py-3 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Card Number</label>
+                <input type="text" placeholder="4242 4242 4242 4242" class="w-full px-4 py-3 text-sm font-mono">
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">Expiry Date</label>
+                  <input type="text" placeholder="MM / YY" class="w-full px-4 py-3 text-sm font-mono">
+                </div>
+                <div>
+                  <label class="block text-xs tracking-wider text-stone-400 uppercase mb-1.5">CVV</label>
+                  <input type="text" placeholder="•••" class="w-full px-4 py-3 text-sm font-mono">
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 mt-5 p-4 glass rounded-lg">
+              <svg class="w-4 h-4 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+              <p class="text-xs text-stone-400">Your payment information is encrypted with 256-bit SSL. We never store your card details.</p>
+            </div>
+          </div>
+          <div class="glass rounded-xl p-5 mb-5">
+            <h3 class="text-sm font-medium mb-3">Billing Address</h3>
+            <label class="flex items-center gap-2 cursor-pointer text-sm text-stone-300">
+              <input type="checkbox" class="filter-checkbox" checked> Same as shipping address
+            </label>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="goToStep(1)" class="btn-outline px-6 py-4 text-sm tracking-widest uppercase">Back</button>
+            <button onclick="goToStep(3)" class="btn-gold flex-1 py-4 text-sm tracking-widest uppercase">Place Order</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div id="checkout-step-3" class="hidden">
+          <div class="glass rounded-xl p-8 text-center">
+            <div class="w-16 h-16 glass-gold rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h2 class="font-serif text-3xl font-light mb-3">Order Confirmed</h2>
+            <p class="text-stone-400 mb-2">Order <span class="text-gold">#MP-2024-08471</span></p>
+            <p class="text-stone-400 text-sm mb-8">Thank you for your purchase. A confirmation has been sent to your email address. Your fragrance will be carefully packaged and dispatched within 24 hours.</p>
+            <div class="glass rounded-xl p-5 text-left mb-6">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-stone-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-6 h-8 text-gold" viewBox="0 0 24 32" fill="currentColor" opacity="0.6"><rect x="7" y="0" width="10" height="5" rx="2"/><rect x="3" y="5" width="18" height="27" rx="3"/></svg>
+                </div>
+                <div>
+                  <p class="font-serif font-medium">Nuit d'Or — 50 ml</p>
+                  <p class="text-stone-500 text-sm">Estimated delivery: Apr 3–5, 2024</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+              <button onclick="showPage('catalog')" class="btn-outline px-8 py-3 text-xs tracking-widest uppercase">Continue Shopping</button>
+              <button onclick="showPage('home')" class="btn-gold px-8 py-3 text-xs tracking-widest uppercase">Back to Home</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Order summary -->
+      <div class="sticky top-20">
+        <div class="glass rounded-xl p-6">
+          <h3 class="font-serif text-lg font-light mb-5">Order Summary</h3>
+          <!-- Cart items -->
+          <div class="space-y-4 mb-5 pb-5 border-b border-white/10">
+            <div class="flex gap-3 items-start">
+              <div class="w-14 h-16 bg-stone-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-8 text-gold/50" viewBox="0 0 24 32" fill="currentColor"><rect x="7" y="0" width="10" height="5" rx="2"/><rect x="3" y="5" width="18" height="27" rx="3"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium">Nuit d'Or</p>
+                <p class="text-stone-500 text-xs">50 ml · Qty: 1</p>
+                <p class="text-gold text-sm mt-1">$185.00</p>
+              </div>
+              <button class="text-stone-600 hover:text-stone-400 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <div class="flex gap-3 items-start">
+              <div class="w-14 h-16 bg-stone-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-8 text-gold/50" viewBox="0 0 24 32" fill="currentColor"><rect x="7" y="0" width="10" height="5" rx="2"/><rect x="3" y="5" width="18" height="27" rx="3"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-medium">Rose Noir</p>
+                <p class="text-stone-500 text-xs">30 ml · Qty: 2</p>
+                <p class="text-gold text-sm mt-1">$290.00</p>
+              </div>
+              <button class="text-stone-600 hover:text-stone-400 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Promo code -->
+          <div class="flex gap-2 mb-5">
+            <input type="text" placeholder="Promo code" class="flex-1 px-3 py-2.5 text-sm">
+            <button class="btn-outline px-4 py-2.5 text-xs tracking-widest uppercase whitespace-nowrap">Apply</button>
+          </div>
+
+          <!-- Totals -->
+          <div class="space-y-2.5 text-sm mb-5">
+            <div class="flex justify-between text-stone-400"><span>Subtotal</span><span class="text-stone-300">$475.00</span></div>
+            <div class="flex justify-between text-stone-400"><span>Shipping</span><span class="text-green-400">Free</span></div>
+            <div class="flex justify-between text-stone-400"><span>Tax (20%)</span><span class="text-stone-300">$79.17</span></div>
+            <div class="flex justify-between font-medium pt-2 border-t border-white/10 text-base">
+              <span>Total</span>
+              <span class="text-gold font-semibold">$554.17</span>
+            </div>
+          </div>
+
+          <!-- Trust badges -->
+          <div class="border-t border-white/10 pt-4 space-y-2.5">
+            <div class="flex items-center gap-2 text-xs text-stone-500">
+              <svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+              256-bit SSL encrypted payment
+            </div>
+            <div class="flex items-center gap-2 text-xs text-stone-500">
+              <svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              100% authentic products guaranteed
+            </div>
+            <div class="flex items-center gap-2 text-xs text-stone-500">
+              <svg class="w-4 h-4 text-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 0 0 4.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 0 1-15.357-2m15.357 2H15"/></svg>
+              30-day hassle-free returns
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ JS ═══ -->
+<script>
+  let qty = 1;
+  let currentPage = 'home';
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active');
+    currentPage = name;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleMobileMenu() {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+  }
+
+  function selectSize(btn) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function changeQty(delta) {
+    qty = Math.max(1, qty + delta);
+    document.getElementById('qty').textContent = qty;
+  }
+
+  function addToCart() {
+    const badge = document.getElementById('cart-count');
+    const current = parseInt(badge.textContent);
+    badge.textContent = current + qty;
+    // Animate badge
+    badge.style.transform = 'scale(1.5)';
+    setTimeout(() => badge.style.transform = 'scale(1)', 200);
+  }
+
+  function goToStep(step) {
+    // Hide all steps
+    document.getElementById('checkout-step-1').classList.add('hidden');
+    document.getElementById('checkout-step-2').classList.add('hidden');
+    document.getElementById('checkout-step-3').classList.add('hidden');
+
+    // Show target step
+    document.getElementById('checkout-step-' + step).classList.remove('hidden');
+
+    // Update indicators
+    for (let i = 1; i <= 3; i++) {
+      const dot = document.getElementById('step' + i + '-dot');
+      dot.classList.remove('done', 'active');
+      dot.style.color = '';
+      dot.style.borderColor = '';
+      if (i < step) {
+        dot.classList.add('done');
+        dot.innerHTML = '✓';
+      } else if (i === step) {
+        dot.classList.add('active');
+        dot.innerHTML = i;
+      } else {
+        dot.style.color = '#78716C';
+        dot.style.borderColor = 'rgba(255,255,255,0.1)';
+        dot.innerHTML = i;
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
